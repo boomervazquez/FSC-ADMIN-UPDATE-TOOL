@@ -373,7 +373,12 @@
   // =========================================================================
   const BIN_ID = '69b866d0b7ec241ddc7461bf';
   const BIN_URL = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
-  const MASTER_KEY = '$2a$10$Uu4esg.3AheH0lsM2MvgNeSg8lrQlO5HtS37u822TO1yjdEIoCQ.m';
+  // This tool is served at https://fsc-admin.kapexspotdray.com, behind the
+  // Cloudflare login, by the Dray API. The JSONBin key is not in this
+  // (public) file: the Dray API fills it in for signed-in admins only.
+  // The old github.io address forwards there.
+  if (location.hostname.endsWith('github.io')) location.replace('https://fsc-admin.kapexspotdray.com/');
+  const MASTER_KEY = '__DRAY_JSONBIN_KEY__';
 
   const REGIONS = [
     {id: 'new_england', name: 'New England', states: 'ME, NH, VT, MA, CT, RI'},
@@ -432,7 +437,7 @@
   // =========================================================================
   async function fetchFromBin() {
     const resp = await fetch(BIN_URL + '/latest', {
-      headers: { 'X-Master-Key': masterKey }
+      headers: { 'X-Access-Key': masterKey }
     });
     if (!resp.ok) {
       const errText = await resp.text();
@@ -447,7 +452,7 @@
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-Master-Key': masterKey
+        'X-Access-Key': masterKey
       },
       body: JSON.stringify(data)
     });
